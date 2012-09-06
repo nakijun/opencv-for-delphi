@@ -45,6 +45,9 @@ procedure cvInitFont( font: PCvFont; font_face: Integer; hscale: Double; vscale:
 { Renders text stroke with specified font and color at specified location.  CvFont should be initialized with cvInitFont }
 procedure cvPutText(img: PCvArr; const text: PAnsiChar; org: TCvPoint; const font: PCvFont; color: TCvScalar); cdecl;
 
+{ Creates a copy of IPL image (widthStep may differ) }
+function cvCloneImage(const image: PIplImage): PIplImage; cdecl;
+
 function CV_RGB(r, g, b: Double): TCvScalar;
 
 implementation
@@ -55,6 +58,7 @@ procedure cvReleaseImage; external CX_Core_DLL name 'cvReleaseImage';
 procedure cvSet; external CX_Core_DLL name 'cvSet';
 procedure cvInitFont; external CX_Core_DLL name 'cvInitFont';
 procedure cvPutText; external CX_Core_DLL name 'cvPutText';
+function cvCloneImage; external CX_Core_DLL name 'cvCloneImage';
 
 function CV_RGB(r, g, b: Double): TCvScalar;
 begin
