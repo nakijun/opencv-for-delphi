@@ -9,6 +9,7 @@ const
   HighGUI_DLL = 'highgui210.dll';
 
   CV_WINDOW_AUTOSIZE = 1;
+  CV_LOAD_IMAGE_COLOR = 1;
 
 type
   CvCapture = record
@@ -38,6 +39,13 @@ function cvWaitKey(delay: Integer = 0): Integer;
 { destroy window and all the trackers associated with it }
 procedure cvDestroyWindow(const name: PAnsiChar);
 
+{ load image from file
+  iscolor can be a combination of above flags where CV_LOAD_IMAGE_UNCHANGED
+  overrides the other flags
+  using CV_LOAD_IMAGE_ANYCOLOR alone is equivalent to CV_LOAD_IMAGE_UNCHANGED
+  unless CV_LOAD_IMAGE_ANYDEPTH is specified images are converted to 8bit }
+function cvLoadImage(const filename: PAnsiChar; iscolor: Integer = CV_LOAD_IMAGE_COLOR): PIplImage; cdecl;
+
 implementation
 
 function cvCreateCameraCapture; external HighGUI_DLL name 'cvCreateCameraCapture';
@@ -47,5 +55,6 @@ function cvNamedWindow; external HighGUI_DLL name 'cvNamedWindow';
 procedure cvShowImage; external HighGUI_DLL name 'cvShowImage';
 function cvWaitKey; external HighGUI_DLL name 'cvWaitKey';
 procedure cvDestroyWindow; external HighGUI_DLL name 'cvDestroyWindow';
+function cvLoadImage; external HighGUI_DLL name 'cvLoadImage';
 
 end.
