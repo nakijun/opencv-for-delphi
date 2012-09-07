@@ -34,10 +34,10 @@ function cvNamedWindow(const name: PAnsiChar; flags: Integer = CV_WINDOW_AUTOSIZ
 procedure cvShowImage(const name: PAnsiChar; const image: PCvArr); cdecl;
 
 { wait for key event infinitely (delay<=0) or for "delay" milliseconds }
-function cvWaitKey(delay: Integer = 0): Integer;
+function cvWaitKey(delay: Integer = 0): Integer; cdecl;
 
 { destroy window and all the trackers associated with it }
-procedure cvDestroyWindow(const name: PAnsiChar);
+procedure cvDestroyWindow(const name: PAnsiChar); cdecl;
 
 { load image from file
   iscolor can be a combination of above flags where CV_LOAD_IMAGE_UNCHANGED
@@ -45,6 +45,9 @@ procedure cvDestroyWindow(const name: PAnsiChar);
   using CV_LOAD_IMAGE_ANYCOLOR alone is equivalent to CV_LOAD_IMAGE_UNCHANGED
   unless CV_LOAD_IMAGE_ANYDEPTH is specified images are converted to 8bit }
 function cvLoadImage(const filename: PAnsiChar; iscolor: Integer = CV_LOAD_IMAGE_COLOR): PIplImage; cdecl;
+
+{ start capturing frames from video file }
+function cvCreateFileCapture(const filename: PAnsiChar): PCvCapture; cdecl;
 
 implementation
 
@@ -56,5 +59,6 @@ procedure cvShowImage; external HighGUI_DLL name 'cvShowImage';
 function cvWaitKey; external HighGUI_DLL name 'cvWaitKey';
 procedure cvDestroyWindow; external HighGUI_DLL name 'cvDestroyWindow';
 function cvLoadImage; external HighGUI_DLL name 'cvLoadImage';
+function cvCreateFileCapture; external HighGUI_DLL name 'cvCreateFileCapture';
 
 end.
