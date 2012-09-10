@@ -9,6 +9,7 @@ const
   CX_Core_DLL = 'cxcore210.dll';
 
   CV_FONT_HERSHEY_COMPLEX = 3;
+
   CV_AA = 16;
 
 type
@@ -48,6 +49,14 @@ procedure cvPutText(img: PCvArr; const text: PAnsiChar; org: TCvPoint; const fon
 { Creates a copy of IPL image (widthStep may differ) }
 function cvCloneImage(const image: PIplImage): PIplImage; cdecl;
 
+{ Draws a circle with specified center and radius. Thickness works in the same way as with cvRectangle }
+procedure cvCircle(img: PCvArr; center: TCvPoint; radius: Integer; color: TCvScalar; thickness: Integer = 1;
+                   line_type: Integer = 8; shift: Integer = 0); cdecl;
+
+{ Draws 4-connected, 8-connected or antialiased line segment connecting two points }
+procedure cvLine(img: PCvArr; pt1, pt2: TCvPoint; color: TCvScalar; thickness: Integer = 1; line_type: Integer = 8;
+                 shift: Integer = 0); cdecl;
+
 function CV_RGB(r, g, b: Double): TCvScalar;
 
 implementation
@@ -59,12 +68,14 @@ procedure cvSet; external CX_Core_DLL name 'cvSet';
 procedure cvInitFont; external CX_Core_DLL name 'cvInitFont';
 procedure cvPutText; external CX_Core_DLL name 'cvPutText';
 function cvCloneImage; external CX_Core_DLL name 'cvCloneImage';
+procedure cvCircle; external CX_Core_DLL name 'cvCircle';
+procedure cvLine; external CX_Core_DLL name 'cvLine';
 
 function CV_RGB(r, g, b: Double): TCvScalar;
 begin
-  Result.val[0] := r;
+  Result.val[0] := b;
   Result.val[1] := g;
-  Result.val[2] := b;
+  Result.val[2] := r;
 end;
 
 end.

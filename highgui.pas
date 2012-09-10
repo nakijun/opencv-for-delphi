@@ -11,11 +11,24 @@ const
   CV_WINDOW_AUTOSIZE = 1;
   CV_LOAD_IMAGE_COLOR = 1;
 
+  CV_EVENT_MOUSEMOVE = 0;
+  CV_EVENT_LBUTTONDOWN = 1;
+  CV_EVENT_RBUTTONDOWN = 2;
+  CV_EVENT_MBUTTONDOWN = 3;
+  CV_EVENT_LBUTTONUP = 4;
+  CV_EVENT_RBUTTONUP = 5;
+  CV_EVENT_MBUTTONUP = 6;
+  CV_EVENT_LBUTTONDBLCLK = 7;
+  CV_EVENT_RBUTTONDBLCLK = 8;
+  CV_EVENT_MBUTTONDBLCLK = 9;
+
 type
   CvCapture = record
   end;
   PCvCapture = ^CvCapture;
   P2PCvCapture = ^PCvCapture;
+
+  TCvMouseCallback = procedure (event: Integer; x, y, flags: Integer; param: pointer); cdecl;
 
 { start capturing frames from camera: index = camera_index + domain_offset (CV_CAP_*) }
 function cvCreateCameraCapture(index: Longint): PCvCapture; cdecl;
@@ -49,6 +62,10 @@ function cvLoadImage(const filename: PAnsiChar; iscolor: Integer = CV_LOAD_IMAGE
 { start capturing frames from video file }
 function cvCreateFileCapture(const filename: PAnsiChar): PCvCapture; cdecl;
 
+{ assign callback for mouse events }
+procedure cvSetMouseCallback(const window_name: PAnsiChar; on_mouse: TCvMouseCallback;
+                             param: pointer = nil); cdecl;
+
 implementation
 
 function cvCreateCameraCapture; external HighGUI_DLL name 'cvCreateCameraCapture';
@@ -60,5 +77,6 @@ function cvWaitKey; external HighGUI_DLL name 'cvWaitKey';
 procedure cvDestroyWindow; external HighGUI_DLL name 'cvDestroyWindow';
 function cvLoadImage; external HighGUI_DLL name 'cvLoadImage';
 function cvCreateFileCapture; external HighGUI_DLL name 'cvCreateFileCapture';
+procedure cvSetMouseCallback; external HighGUI_DLL name 'cvSetMouseCallback';
 
 end.
