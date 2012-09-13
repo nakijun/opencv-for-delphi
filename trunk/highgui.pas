@@ -28,6 +28,11 @@ type
   PCvCapture = ^CvCapture;
   P2PCvCapture = ^PCvCapture;
 
+  CvVideoWriter = record
+  end;
+  PCvVideoWriter = ^CvVideoWriter;
+  P2CvVideoWriter = ^PCvVideoWriter;
+
   TCvMouseCallback = procedure (event: Integer; x, y, flags: Integer; param: pointer); cdecl;
 
 { start capturing frames from camera: index = camera_index + domain_offset (CV_CAP_*) }
@@ -66,6 +71,20 @@ function cvCreateFileCapture(const filename: PAnsiChar): PCvCapture; cdecl;
 procedure cvSetMouseCallback(const window_name: PAnsiChar; on_mouse: TCvMouseCallback;
                              param: pointer = nil); cdecl;
 
+{ initialize video file writer }
+function cvCreateVideoWriter(const filename: PAnsiChar; fourcc: Integer; fps: Double; frame_size: TCvSize;
+   is_color: Integer = 1): PCvVideoWriter; cdecl;
+
+{ write frame to video file }
+function cvWriteFrame(writer: PCvVideoWriter; const image: PIplImage): Integer; cdecl;
+
+{ close video file writer }
+procedure cvReleaseVideoWriter(writer: P2CvVideoWriter); cdecl;
+
+procedure cvDestroyAllWindows; cdecl;
+
+function CV_FOURCC (c1, c2, c3, c4: Shortint): Integer;
+
 implementation
 
 function cvCreateCameraCapture; external HighGUI_DLL name 'cvCreateCameraCapture';
@@ -78,5 +97,14 @@ procedure cvDestroyWindow; external HighGUI_DLL name 'cvDestroyWindow';
 function cvLoadImage; external HighGUI_DLL name 'cvLoadImage';
 function cvCreateFileCapture; external HighGUI_DLL name 'cvCreateFileCapture';
 procedure cvSetMouseCallback; external HighGUI_DLL name 'cvSetMouseCallback';
+function cvCreateVideoWriter; external HighGUI_DLL name 'cvCreateVideoWriter';
+function cvWriteFrame; external HighGUI_DLL name 'cvWriteFrame';
+procedure cvReleaseVideoWriter; external HighGUI_DLL name 'cvReleaseVideoWriter';
+procedure cvDestroyAllWindows; external HighGUI_DLL name 'cvDestroyAllWindows';
+
+function CV_FOURCC (c1, c2, c3, c4: Shortint): Integer;
+begin
+  Result := ((c1 and 255) + ((c2 and 255) shl 8) + ((c3 and 255) shl 16) + ((c4 and 255) shl 24));
+end;
 
 end.
