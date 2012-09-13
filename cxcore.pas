@@ -57,6 +57,9 @@ procedure cvCircle(img: PCvArr; center: TCvPoint; radius: Integer; color: TCvSca
 procedure cvLine(img: PCvArr; pt1, pt2: TCvPoint; color: TCvScalar; thickness: Integer = 1; line_type: Integer = 8;
                  shift: Integer = 0); cdecl;
 
+{ Returns width and height of array in elements }
+function cvGetSize(const arr: PCvArr): TCvSize; cdecl;
+
 function CV_RGB(r, g, b: Double): TCvScalar;
 
 implementation
@@ -70,6 +73,7 @@ procedure cvPutText; external CX_Core_DLL name 'cvPutText';
 function cvCloneImage; external CX_Core_DLL name 'cvCloneImage';
 procedure cvCircle; external CX_Core_DLL name 'cvCircle';
 procedure cvLine; external CX_Core_DLL name 'cvLine';
+function cvGetSize; external CX_Core_DLL name 'cvGetSize';
 
 function CV_RGB(r, g, b: Double): TCvScalar;
 begin

@@ -2,6 +2,18 @@ unit cxtypes;
 
 interface
 
+const
+  IPL_DEPTH_SIGN = $80000000;
+
+  IPL_DEPTH_1U = 1;
+  IPL_DEPTH_8U = 8;
+  IPL_DEPTH_16U = 16;
+  IPL_DEPTH_32F = 32;
+
+  IPL_DEPTH_8S = IPL_DEPTH_SIGN or 8;
+  IPL_DEPTH_16S = IPL_DEPTH_SIGN or 16;
+  IPL_DEPTH_32S = IPL_DEPTH_SIGN or 32;
+
 type
   PIplROI = ^TIplROI;
   TIplROI = record
