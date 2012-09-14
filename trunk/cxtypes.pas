@@ -72,9 +72,15 @@ type
     val: array [0..3] of Double;
   end;
 
+  TCvRect = record
+    x, y: Integer;
+    Width, Height: Integer;
+  end;
+
 function cvPoint(x, y: Integer): TCvPoint;
 function cvSize(width, height: Integer): TCvSize;
 function cvScalar(val0: Double; val1: Double = 0; val2: Double = 0; val3: Double = 0): TCvScalar;
+function cvRect(AX, AY: Integer; AWidth, AHeight: Integer): TCvRect;
 
 implementation
 
@@ -96,6 +102,14 @@ begin
   Result.val[1] := val1;
   Result.val[2] := val2;
   Result.val[3] := val3;
+end;
+
+function cvRect(AX, AY: Integer; AWidth, AHeight: Integer): TCvRect;
+begin
+  Result.x := AX;
+  Result.y := AY;
+  Result.Width := AWidth;
+  Result.Height := AHeight;
 end;
 
 end.
