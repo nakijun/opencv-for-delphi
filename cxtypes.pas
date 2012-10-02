@@ -77,6 +77,17 @@ type
     Width, Height: Integer;
   end;
 
+  PIplConvKernel = ^TIplConvKernel;
+  P2PIplConvKernel = ^PIplConvKernel;
+  TIplConvKernel = record
+    nCols: Integer;
+    nRows: Integer;
+    anchorX: Integer;
+    anchorY: Integer;
+    values: PInteger;
+    nShiftR: Integer;
+  end;
+
 function cvPoint(x, y: Integer): TCvPoint;
 function cvSize(width, height: Integer): TCvSize;
 function cvScalar(val0: Double; val1: Double = 0; val2: Double = 0; val3: Double = 0): TCvScalar;

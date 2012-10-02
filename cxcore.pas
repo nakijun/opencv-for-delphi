@@ -80,6 +80,11 @@ procedure cvResetImageROI(image: PIplImage); cdecl;
 { Clears all the array elements (sets them to 0) }
 procedure cvSetZero(arr: PCvArr); cdecl;
 
+{ Mirror array data around horizontal (flip=0),
+   vertical (flip=1) or both(flip=-1) axises:
+   cvFlip(src) flips images vertically and sequences horizontally (inplace) }
+procedure cvFlip(const src: PCvArr; dst: PCvArr = nil; flip_mode: Integer = 0); cdecl;
+
 function CV_RGB(r, g, b: Double): TCvScalar;
 
 implementation
@@ -98,6 +103,7 @@ procedure cvSetImageROI; external CX_Core_DLL name 'cvSetImageROI';
 procedure cvAddS; external CX_Core_DLL name 'cvAddS';
 procedure cvResetImageROI; external CX_Core_DLL name 'cvResetImageROI';
 procedure cvSetZero; external CX_Core_DLL name 'cvSetZero';
+procedure cvFlip; external CX_Core_DLL name 'cvFlip';
 
 function CV_RGB(r, g, b: Double): TCvScalar;
 begin
