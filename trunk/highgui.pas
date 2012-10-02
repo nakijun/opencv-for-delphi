@@ -34,6 +34,7 @@ type
   P2CvVideoWriter = ^PCvVideoWriter;
 
   TCvMouseCallback = procedure (event: Integer; x, y, flags: Integer; param: pointer); cdecl;
+  TCvTrackbarCallback = procedure (pos: Integer); cdecl;
 
 { start capturing frames from camera: index = camera_index + domain_offset (CV_CAP_*) }
 function cvCreateCameraCapture(index: Longint): PCvCapture; cdecl;
@@ -83,6 +84,11 @@ procedure cvReleaseVideoWriter(writer: P2CvVideoWriter); cdecl;
 
 procedure cvDestroyAllWindows; cdecl;
 
+{ create trackbar and display it on top of given window, set callback }
+function cvCreateTrackbar(const trackbar_name: PAnsiChar; const window_name: PAnsiChar;
+   value: PInteger; count: Integer; on_change: TCvTrackbarCallback): Integer; cdecl;
+
+
 function CV_FOURCC (c1, c2, c3, c4: Shortint): Integer;
 
 implementation
@@ -101,6 +107,7 @@ function cvCreateVideoWriter; external HighGUI_DLL name 'cvCreateVideoWriter';
 function cvWriteFrame; external HighGUI_DLL name 'cvWriteFrame';
 procedure cvReleaseVideoWriter; external HighGUI_DLL name 'cvReleaseVideoWriter';
 procedure cvDestroyAllWindows; external HighGUI_DLL name 'cvDestroyAllWindows';
+function cvCreateTrackbar; external HighGUI_DLL name 'cvCreateTrackbar';
 
 function CV_FOURCC (c1, c2, c3, c4: Shortint): Integer;
 begin
