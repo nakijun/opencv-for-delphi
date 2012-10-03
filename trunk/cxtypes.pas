@@ -14,6 +14,26 @@ const
   IPL_DEPTH_16S = IPL_DEPTH_SIGN or 16;
   IPL_DEPTH_32S = IPL_DEPTH_SIGN or 32;
 
+  CV_CN_MAX = 64;
+  CV_CN_SHIFT = 3;
+  CV_DEPTH_MAX = 8;
+  CV_MAT_DEPTH_MASK = 7;
+  CV_MAT_TYPE_MASK = CV_DEPTH_MAX * CV_CN_MAX - 1;
+  CV_MAGIC_MASK = $FFFF0000;
+  CV_MAT_MAGIC_VAL = $42420000;
+  CV_MAT_CONT_FLAG_SHIFT = 14;
+  CV_MAT_CONT_FLAG = 1 shl CV_MAT_CONT_FLAG_SHIFT;
+  CV_MAT_CN_MASK = ((CV_CN_MAX - 1) shl CV_CN_SHIFT);
+
+  CV_8U  = 0;
+  CV_8S  = 1;
+  CV_16U = 2;
+  CV_16S = 3;
+  CV_32S = 4;
+  CV_32F = 5;
+  CV_64F = 6;
+  CV_USRTYPE1 = 7;
+
 type
   PIplROI = ^TIplROI;
   TIplROI = record
@@ -88,10 +108,32 @@ type
     nShiftR: Integer;
   end;
 
+  PCvMat = ^TCvMat;
+  TCvMat = record
+    _type: Integer;
+    step: Integer;
+
+    refcount: PInteger;
+    hdr_refcount: Integer;
+
+    data: Pointer;
+
+    rows: Integer;
+    cols: Integer;
+  end;
+
 function cvPoint(x, y: Integer): TCvPoint;
 function cvSize(width, height: Integer): TCvSize;
 function cvScalar(val0: Double; val1: Double = 0; val2: Double = 0; val3: Double = 0): TCvScalar;
 function cvRect(AX, AY: Integer; AWidth, AHeight: Integer): TCvRect;
+function cvMat(rows: Integer; cols: Integer; _type: Integer; data: Pointer = nil): TCvMat;
+
+function CV_MAT_DEPTH(flags: Integer): Integer;
+function CV_MAT_TYPE(flags: Integer): Integer;
+function CV_ELEM_SIZE(_type: Integer): Integer;
+function CV_MAT_CN(flags: Integer): Integer;
+function CV_32FC1: Integer;
+function CV_MAKETYPE(depth, cn: Integer): Integer;
 
 implementation
 
@@ -121,6 +163,55 @@ begin
   Result.y := AY;
   Result.Width := AWidth;
   Result.Height := AHeight;
+end;
+
+function cvMat(rows: Integer; cols: Integer; _type: Integer; data: Pointer = nil): TCvMat;
+var
+  m: TCvMat;
+begin
+  if not (CV_MAT_DEPTH(_type) <= CV_64F) then
+    exit;
+
+  _type := CV_MAT_TYPE(_type);
+  m._type := CV_MAT_MAGIC_VAL or CV_MAT_CONT_FLAG or _type;
+  m.cols := cols;
+  m.rows := rows;
+  m.step := m.cols * CV_ELEM_SIZE(_type);
+  m.data := data;
+  m.refcount := nil;
+  m.hdr_refcount := 0;
+
+  Result := m;
+end;
+
+function CV_MAT_DEPTH(flags: Integer): Integer;
+begin
+  Result := flags and CV_MAT_DEPTH_MASK;
+end;
+
+function CV_MAT_TYPE(flags: Integer): Integer;
+begin
+  Result := flags and CV_MAT_TYPE_MASK;
+end;
+
+function CV_MAT_CN(flags: Integer): Integer;
+begin
+  Result := ((((flags) and CV_MAT_CN_MASK) shr CV_CN_SHIFT) + 1);
+end;
+
+function CV_ELEM_SIZE(_type: Integer): Integer;
+begin
+  Result := (CV_MAT_CN(_type) shl ((((sizeof(Integer) div 4 + 1) * 16384 or $3a50) shr CV_MAT_DEPTH(_type) * 2) and 3));
+end;
+
+function CV_32FC1: Integer;
+begin
+  Result := CV_MAKETYPE(CV_32F, 1);
+end;
+
+function CV_MAKETYPE(depth, cn: Integer): Integer;
+begin
+  Result := (CV_MAT_DEPTH(depth) + (((cn)-1) shl CV_CN_SHIFT));
 end;
 
 end.
