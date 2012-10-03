@@ -54,7 +54,10 @@ procedure cvDilate(const src: PCvArr; dst: PCvArr; element: PIplConvKernel = nil
   iterations: Integer = 1); cdecl;
 
 { releases structuring element }
-procedure cvReleaseStructuringElement(element: P2PIplConvKernel);
+procedure cvReleaseStructuringElement(element: P2PIplConvKernel); cdecl;
+
+{ Convolves the image with the kernel }
+procedure cvFilter2D(const src: PCvArr; dst: PCvArr; const kernel: PCvMat; anchor: TCvPoint); cdecl;
 
 implementation
 
@@ -66,5 +69,6 @@ function cvCreateStructuringElementEx; external CV_DLL name 'cvCreateStructuring
 procedure cvErode; external CV_DLL name 'cvErode';
 procedure cvDilate; external CV_DLL name 'cvDilate';
 procedure cvReleaseStructuringElement; external CV_DLL name 'cvReleaseStructuringElement';
+procedure cvFilter2D; external CV_DLL name 'cvFilter2D';
 
 end.
