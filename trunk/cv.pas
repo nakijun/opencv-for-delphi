@@ -3,7 +3,7 @@ unit cv;
 interface
 
 uses
-  cxtypes;
+  cxtypes, cvtypes;
 
 const
   CV_DLL = 'cv210.dll';
@@ -59,6 +59,17 @@ procedure cvReleaseStructuringElement(element: P2PIplConvKernel); cdecl;
 { Convolves the image with the kernel }
 procedure cvFilter2D(const src: PCvArr; dst: PCvArr; const kernel: PCvMat; anchor: TCvPoint); cdecl;
 
+{ Runs canny edge detector }
+procedure cvCanny(const image: PCvArr; edges: PCvArr; threshold1, threshold2: Double;
+   aperture_size: Integer = 3); cdecl;
+
+{
+   Smoothes the input image with gaussian kernel and then down-samples it.
+   dst_width = floor(src_width/2)[+1],
+   dst_height = floor(src_height/2)[+1]
+}
+procedure cvPyrDown(const src: PCvArr; dst: PCvArr; filter: Integer = CV_GAUSSIAN_5x5);
+
 implementation
 
 procedure cvCvtColor; external CV_DLL name 'cvCvtColor';
@@ -70,5 +81,7 @@ procedure cvErode; external CV_DLL name 'cvErode';
 procedure cvDilate; external CV_DLL name 'cvDilate';
 procedure cvReleaseStructuringElement; external CV_DLL name 'cvReleaseStructuringElement';
 procedure cvFilter2D; external CV_DLL name 'cvFilter2D';
+procedure cvCanny; external CV_DLL name 'cvCanny';
+procedure cvPyrDown; external CV_DLL name 'cvPyrDown';
 
 end.
