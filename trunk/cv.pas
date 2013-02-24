@@ -119,6 +119,9 @@ const
 
   CV_COLORCVT_MAX = 100;
 
+  CV_WARP_FILL_OUTLIERS = 8;
+  CV_WARP_INVERSE_MAP   = 16;
+
 { Converts input array pixels from one color space to another }
 procedure cvCvtColor(const src: PCvArr; dst: PCvArr; code: Integer); cdecl;
 
@@ -161,7 +164,7 @@ procedure cvCanny(const image: PCvArr; edges: PCvArr; threshold1, threshold2: Do
    dst_width = floor(src_width/2)[+1],
    dst_height = floor(src_height/2)[+1]
 }
-procedure cvPyrDown(const src: PCvArr; dst: PCvArr; filter: Integer = CV_GAUSSIAN_5x5);
+procedure cvPyrDown(const src: PCvArr; dst: PCvArr; filter: Integer = CV_GAUSSIAN_5x5); cdecl;
 
 implementation
 
