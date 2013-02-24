@@ -43,7 +43,7 @@ begin
 
     // освобождаем ресурсы
     cvReleaseImage(@image);
-   // cvReleaseImage(@gray);
+    cvReleaseImage(@gray);
     cvReleaseImage(@dst);
 
     // удаляем окна
