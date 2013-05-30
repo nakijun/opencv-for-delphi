@@ -8,6 +8,7 @@ uses
 const
   CV_DLL = 'cv210.dll';
 
+  { Image Processing  }
   CV_BLUR_NO_SCALE = 0;
   CV_BLUR = 1;
   CV_GAUSSIAN = 2;
@@ -122,12 +123,44 @@ const
   CV_WARP_FILL_OUTLIERS = 8;
   CV_WARP_INVERSE_MAP   = 16;
 
-{ Converts input array pixels from one color space to another }
-procedure cvCvtColor(const src: PCvArr; dst: PCvArr; code: Integer); cdecl;
+(****************************************************************************************\
+*                                    Image Processing                                    *
+\****************************************************************************************)
+{ Copies source 2D array inside of the larger destination array and
+   makes a border of the specified type (IPL_BORDER_*) around the copied area. }
+procedure cvCopyMakeBorder(const src: PCvArr; dst: PCvArr; offset: TCvPoint;
+   bordertype: Integer; value: TCvScalar); cdecl;
 
 { Smoothes array (removes noise) }
-procedure cvSmooth(const src: PCvArr; dst: PCvArr; smoothtype: Integer = CV_GAUSSIAN; size1: Integer = 3; size2: Integer = 0;
-                   sigma1: Double = 0; sigma2: Double = 0); cdecl;
+procedure cvSmooth(const src: PCvArr; dst: PCvArr; smoothtype: Integer = CV_GAUSSIAN;
+   size1: Integer = 3; size2: Integer = 0; sigma1: Double = 0; sigma2: Double = 0); cdecl;
+
+{ Convolves the image with the kernel }
+procedure cvFilter2D(const src: PCvArr; dst: PCvArr; const kernel: PCvMat; anchor: TCvPoint); cdecl;
+
+{ Finds integral image: SUM(X,Y) = sum(x<X,y<Y)I(x,y) }
+procedure cvIntegral(const image: PCvArr; sum: PCvArr; sqsum: PCvArr = nil;
+   tilted_sum: PCvArr = nil); cdecl;
+
+{
+   Smoothes the input image with gaussian kernel and then down-samples it.
+   dst_width = floor(src_width/2)[+1],
+   dst_height = floor(src_height/2)[+1]
+}
+procedure cvPyrDown(const src: PCvArr; dst: PCvArr; filter: Integer = CV_GAUSSIAN_5x5); cdecl;
+
+{
+   Up-samples image and smoothes the result with gaussian kernel.
+   dst_width = src_width*2,
+   dst_height = src_height*2
+}
+procedure cvPyrUp(const src: PCvArr; dst: PCvArr; filter: Integer = CV_GAUSSIAN_5x5); cdecl;
+
+{ Releases pyramid }
+procedure cvReleasePyramid(pyramid: P3CvMat; extra_layers: Integer); cdecl;
+
+{ Converts input array pixels from one color space to another }
+procedure cvCvtColor(const src: PCvArr; dst: PCvArr; code: Integer); cdecl;
 
 { equalizes histogram of 8-bit single-channel image }
 procedure cvEqualizeHist(const src: PCvArr; dst: PCvArr); cdecl;
@@ -152,32 +185,28 @@ procedure cvDilate(const src: PCvArr; dst: PCvArr; element: PIplConvKernel = nil
 { releases structuring element }
 procedure cvReleaseStructuringElement(element: P2PIplConvKernel); cdecl;
 
-{ Convolves the image with the kernel }
-procedure cvFilter2D(const src: PCvArr; dst: PCvArr; const kernel: PCvMat; anchor: TCvPoint); cdecl;
-
 { Runs canny edge detector }
 procedure cvCanny(const image: PCvArr; edges: PCvArr; threshold1, threshold2: Double;
    aperture_size: Integer = 3); cdecl;
 
-{
-   Smoothes the input image with gaussian kernel and then down-samples it.
-   dst_width = floor(src_width/2)[+1],
-   dst_height = floor(src_height/2)[+1]
-}
-procedure cvPyrDown(const src: PCvArr; dst: PCvArr; filter: Integer = CV_GAUSSIAN_5x5); cdecl;
-
 implementation
 
-procedure cvCvtColor; external CV_DLL name 'cvCvtColor';
+{ Image Processing  }
+procedure cvCopyMakeBorder; external CV_DLL name 'cvCopyMakeBorder';
 procedure cvSmooth; external CV_DLL name 'cvSmooth';
+procedure cvFilter2D; external CV_DLL name 'cvFilter2D';
+procedure cvIntegral; external CV_DLL name 'cvIntegral';
+procedure cvPyrDown; external CV_DLL name 'cvPyrDown';
+procedure cvPyrUp; external CV_DLL name 'cvPyrUp';
+procedure cvReleasePyramid; external CV_DLL name 'cvReleasePyramid';
+
+procedure cvCvtColor; external CV_DLL name 'cvCvtColor';
 procedure cvEqualizeHist; external CV_DLL name 'cvEqualizeHist';
 procedure cvResize; external CV_DLL name 'cvResize';
 function cvCreateStructuringElementEx; external CV_DLL name 'cvCreateStructuringElementEx';
 procedure cvErode; external CV_DLL name 'cvErode';
 procedure cvDilate; external CV_DLL name 'cvDilate';
 procedure cvReleaseStructuringElement; external CV_DLL name 'cvReleaseStructuringElement';
-procedure cvFilter2D; external CV_DLL name 'cvFilter2D';
 procedure cvCanny; external CV_DLL name 'cvCanny';
-procedure cvPyrDown; external CV_DLL name 'cvPyrDown';
 
 end.
