@@ -108,6 +108,8 @@ type
     nShiftR: Integer;
   end;
 
+  P3CvMat = ^P2CvMat;
+  P2CvMat = ^PCvMat;
   PCvMat = ^TCvMat;
   TCvMat = record
     _type: Integer;
@@ -120,6 +122,22 @@ type
 
     rows: Integer;
     cols: Integer;
+  end;
+
+  PCvMemBlock = ^CvMemBlock;
+  CvMemBlock = record
+    prev: PCvMemBlock;
+    next: PCvMemBlock;
+  end;
+
+  PCvMemStorage = ^CvMemStorage;
+  CvMemStorage = record
+    signature: Integer;
+    bottom: PCvMemBlock;          { First allocated block.                   }
+    top: PCvMemBlock;             { Current memory block - top of the stack. }
+    parent: PCvMemStorage;        { We get new blocks from parent as needed. }
+    block_size: Integer;          { Block size.                              }
+    free_space: Integer;          { Remaining free space in current block.   }
   end;
 
 function cvPoint(x, y: Integer): TCvPoint;
