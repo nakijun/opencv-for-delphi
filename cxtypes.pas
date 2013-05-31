@@ -34,6 +34,11 @@ const
   CV_64F = 6;
   CV_USRTYPE1 = 7;
 
+  { CvTermCriteria }
+  CV_TERMCRIT_ITER = 1;
+  CV_TERMCRIT_NUMBER = CV_TERMCRIT_ITER;
+  CV_TERMCRIT_EPS = 2;
+
 type
   PIplROI = ^TIplROI;
   TIplROI = record
@@ -75,6 +80,7 @@ type
     ImageDataOrigin : PByte;                        // Pointer to very origin of image data (not necessarily aligned) - needed for correct deallocation
   end;
 
+  PCvSize = ^TCvSize;
   TCvSize = record
     width: Integer;
     height: Integer;
@@ -140,6 +146,16 @@ type
     free_space: Integer;          { Remaining free space in current block.   }
   end;
 
+  { CvTermCriteria }
+
+  TCvTermCriteria = record
+    _type: Integer;     { may be combination of
+                          CV_TERMCRIT_ITER
+                          CV_TERMCRIT_EPS }
+    max_iter: Integer;
+    epsilon: Double;
+  end;
+
 function cvPoint(x, y: Integer): TCvPoint;
 function cvSize(width, height: Integer): TCvSize;
 function cvScalar(val0: Double; val1: Double = 0; val2: Double = 0; val3: Double = 0): TCvScalar;
@@ -152,6 +168,9 @@ function CV_ELEM_SIZE(_type: Integer): Integer;
 function CV_MAT_CN(flags: Integer): Integer;
 function CV_32FC1: Integer;
 function CV_MAKETYPE(depth, cn: Integer): Integer;
+
+{ CvTermCriteria }
+function cvTermCriteria(_type: Integer; max_iter: Integer; epsilon: Double): TCvTermCriteria;
 
 implementation
 
@@ -230,6 +249,14 @@ end;
 function CV_MAKETYPE(depth, cn: Integer): Integer;
 begin
   Result := (CV_MAT_DEPTH(depth) + (((cn)-1) shl CV_CN_SHIFT));
+end;
+
+{ CvTermCriteria }
+function cvTermCriteria(_type: Integer; max_iter: Integer; epsilon: Double): TCvTermCriteria;
+begin
+  Result._type := _type;
+  Result.max_iter := max_iter;
+  Result.epsilon := epsilon;
 end;
 
 end.

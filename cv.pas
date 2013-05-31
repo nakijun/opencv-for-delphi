@@ -25,6 +25,12 @@ const
   CV_SHAPE_ELLIPSE = 2;
   CV_SHAPE_CUSTOM = 100;
 
+  CV_INPAINT_NS = 0;
+  CV_INPAINT_TELEA = 1;
+
+  CV_SCHARR = -1;
+  CV_MAX_SOBEL_KSIZE = 7;
+
   { Constants for color conversion }
   CV_BGR2BGRA   = 0;
   CV_RGB2RGBA   = CV_BGR2BGRA;
@@ -156,8 +162,20 @@ procedure cvPyrDown(const src: PCvArr; dst: PCvArr; filter: Integer = CV_GAUSSIA
 }
 procedure cvPyrUp(const src: PCvArr; dst: PCvArr; filter: Integer = CV_GAUSSIAN_5x5); cdecl;
 
+{ Builds pyramid for an image }
+function cvCreatePyramid(const img: PCvArr; extra_layers: Integer; rate: Double;
+   const layer_sizes: PCvSize = nil; bufarr: PCvArr = nil; calc: Integer = 1;
+   filter: Integer = CV_GAUSSIAN_5x5): P2CvMat; cdecl;
+
 { Releases pyramid }
 procedure cvReleasePyramid(pyramid: P3CvMat; extra_layers: Integer); cdecl;
+
+{ Segments image using seed "markers" }
+procedure cvWatershed(const image: PCvArr; markers: PCvArr);
+
+{ Inpaints the selected region in the image }
+procedure cvInpaint(const src: PCvArr; const inpaint_mask: PCvArr;
+   dst: PCvArr; inpaintRange: Double; flags: Integer);
 
 { Converts input array pixels from one color space to another }
 procedure cvCvtColor(const src: PCvArr; dst: PCvArr; code: Integer); cdecl;
@@ -198,7 +216,10 @@ procedure cvFilter2D; external CV_DLL name 'cvFilter2D';
 procedure cvIntegral; external CV_DLL name 'cvIntegral';
 procedure cvPyrDown; external CV_DLL name 'cvPyrDown';
 procedure cvPyrUp; external CV_DLL name 'cvPyrUp';
+function cvCreatePyramid; external CV_DLL name 'cvCreatePyramid';
 procedure cvReleasePyramid; external CV_DLL name 'cvReleasePyramid';
+procedure cvWatershed; external CV_DLL name 'cvWatershed';
+procedure cvInpaint; external CV_DLL name 'cvInpaint';
 
 procedure cvCvtColor; external CV_DLL name 'cvCvtColor';
 procedure cvEqualizeHist; external CV_DLL name 'cvEqualizeHist';
