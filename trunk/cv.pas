@@ -15,11 +15,6 @@ const
   CV_MEDIAN = 3;
   CV_BILATERAL = 4;
 
-  CV_INTER_NN = 0;
-  CV_INTER_LINEAR = 1;
-  CV_INTER_CUBIC = 2;
-  CV_INTER_AREA = 3;
-
   CV_SHAPE_RECT = 0;
   CV_SHAPE_CROSS = 1;
   CV_SHAPE_ELLIPSE = 2;
@@ -126,6 +121,11 @@ const
 
   CV_COLORCVT_MAX = 100;
 
+  CV_INTER_NN = 0;
+  CV_INTER_LINEAR = 1;
+  CV_INTER_CUBIC = 2;
+  CV_INTER_AREA = 3;
+
   CV_WARP_FILL_OUTLIERS = 8;
   CV_WARP_INVERSE_MAP   = 16;
 
@@ -177,6 +177,15 @@ procedure cvWatershed(const image: PCvArr; markers: PCvArr);
 procedure cvInpaint(const src: PCvArr; const inpaint_mask: PCvArr;
    dst: PCvArr; inpaintRange: Double; flags: Integer);
 
+{ Calculates an image derivative using generalized Sobel
+   (aperture_size = 1,3,5,7) or Scharr (aperture_size = -1) operator.
+   Scharr can be used only for the first dx or dy derivative }
+procedure cvSobel(const src: PCvArr; dst: PCvArr; xorder, yorder: Integer;
+   aperture_size: Integer = 3); cdecl;
+
+{ Calculates the image Laplacian: (d2/dx + d2/dy)I }
+procedure cvLaplace(const src: PCvArr; dst: PCvArr; aperture_size: Integer = 3);
+
 { Converts input array pixels from one color space to another }
 procedure cvCvtColor(const src: PCvArr; dst: PCvArr; code: Integer); cdecl;
 
@@ -220,6 +229,8 @@ function cvCreatePyramid; external CV_DLL name 'cvCreatePyramid';
 procedure cvReleasePyramid; external CV_DLL name 'cvReleasePyramid';
 procedure cvWatershed; external CV_DLL name 'cvWatershed';
 procedure cvInpaint; external CV_DLL name 'cvInpaint';
+procedure cvSobel; external CV_DLL name 'cvSobel';
+procedure cvLaplace; external CV_DLL name 'cvLaplace';
 
 procedure cvCvtColor; external CV_DLL name 'cvCvtColor';
 procedure cvEqualizeHist; external CV_DLL name 'cvEqualizeHist';
