@@ -171,11 +171,11 @@ function cvCreatePyramid(const img: PCvArr; extra_layers: Integer; rate: Double;
 procedure cvReleasePyramid(pyramid: P3CvMat; extra_layers: Integer); cdecl;
 
 { Segments image using seed "markers" }
-procedure cvWatershed(const image: PCvArr; markers: PCvArr);
+procedure cvWatershed(const image: PCvArr; markers: PCvArr); cdecl;
 
 { Inpaints the selected region in the image }
 procedure cvInpaint(const src: PCvArr; const inpaint_mask: PCvArr;
-   dst: PCvArr; inpaintRange: Double; flags: Integer);
+   dst: PCvArr; inpaintRange: Double; flags: Integer); cdecl;
 
 { Calculates an image derivative using generalized Sobel
    (aperture_size = 1,3,5,7) or Scharr (aperture_size = -1) operator.
@@ -184,16 +184,53 @@ procedure cvSobel(const src: PCvArr; dst: PCvArr; xorder, yorder: Integer;
    aperture_size: Integer = 3); cdecl;
 
 { Calculates the image Laplacian: (d2/dx + d2/dy)I }
-procedure cvLaplace(const src: PCvArr; dst: PCvArr; aperture_size: Integer = 3);
+procedure cvLaplace(const src: PCvArr; dst: PCvArr; aperture_size: Integer = 3); cdecl;
 
 { Converts input array pixels from one color space to another }
 procedure cvCvtColor(const src: PCvArr; dst: PCvArr; code: Integer); cdecl;
 
-{ equalizes histogram of 8-bit single-channel image }
-procedure cvEqualizeHist(const src: PCvArr; dst: PCvArr); cdecl;
-
 { Resizes image (input array is resized to fit the destination array) }
 procedure cvResize(const src: PCvArr; dst: PCvArr; interpolation: Integer = CV_INTER_LINEAR); cdecl;
+
+{ Warps image with affine transform }
+{! Variable flags have to default value is CV_INTER_LINEAR + CV_WARP_FILL_OUTLIERS !}
+procedure cvWarpAffine(const src: PCvArr; dst: PCvArr; const map_matrix: PCvMat;
+   flags: Integer; fillval: TCvScalar); cdecl;
+
+{ Computes affine transform matrix for mapping src[i] to dst[i] (i=0,1,2) }
+function cvGetAffineTransform(const src: PCvPoint2D32f; const dst: PCvPoint2D32f;
+   map_matrix: PCvMat): PCvMat; cdecl;
+
+{ Computes rotation_matrix matrix }
+function cv2DRotationMatrix(center: TCvPoint2D32f; angle: Double;
+   scale: Double; map_matrix: PCvMat): PCvMat; cdecl;
+
+{ Warps image with perspective (projective) transform }
+{! Variable flags have to default value is CV_INTER_LINEAR + CV_WARP_FILL_OUTLIERS !}
+procedure cvWarpPerspective(const src: PCvArr; dst: PCvArr; const map_matrix: PCvMat;
+   flags: Integer; fillval: TCvScalar); cdecl;
+
+{ Computes perspective transform matrix for mapping src[i] to dst[i] (i=0,1,2,3) }
+function cvGetPerspectiveTransform(const src: PCvPoint2D32f; const dst: PCvPoint2D32f;
+   map_matrix: PCvMat): PCvMat; cdecl;
+
+{ Performs generic geometric transformation using the specified coordinate maps }
+{! Variable flags have to default value is CV_INTER_LINEAR + CV_WARP_FILL_OUTLIERS !}
+procedure cvRemap(const src: PCvArr; dst: PCvArr; const mapx: PCvArr; const mapy: PCvArr;
+   flags: Integer; fillval: TCvScalar); cdecl;
+
+{ Converts mapx & mapy from floating-point to integer formats for cvRemap }
+procedure cvConvertMaps(const mapx: PCvArr; const mapy: PCvArr;
+   mapxy: PCvArr; mapalpha: PCvArr); cdecl;
+
+{ Performs forward or inverse log-polar image transform }
+procedure cvLogPolar(const src: PCvArr; dst: PCvArr; center: TCvPoint2D32f; M: Double;
+   flags: Integer = (CV_INTER_LINEAR + CV_WARP_FILL_OUTLIERS)); cdecl;
+
+{ Performs forward or inverse linear-polar image transform }
+procedure cvLinearPolar(const src: PCvArr; dst: PCvArr;
+   center: TCvPoint2D32f; maxRadius: Double;
+   flags: Integer = (CV_INTER_LINEAR + CV_WARP_FILL_OUTLIERS)); cdecl;
 
 { creates structuring element used for morphological operations }
 function cvCreateStructuringElementEx(cols: Integer; rows: Integer; anchor_x: Integer; anchor_y: Integer;
@@ -216,6 +253,9 @@ procedure cvReleaseStructuringElement(element: P2PIplConvKernel); cdecl;
 procedure cvCanny(const image: PCvArr; edges: PCvArr; threshold1, threshold2: Double;
    aperture_size: Integer = 3); cdecl;
 
+{ equalizes histogram of 8-bit single-channel image }
+procedure cvEqualizeHist(const src: PCvArr; dst: PCvArr); cdecl;
+
 implementation
 
 { Image Processing  }
@@ -231,10 +271,19 @@ procedure cvWatershed; external CV_DLL name 'cvWatershed';
 procedure cvInpaint; external CV_DLL name 'cvInpaint';
 procedure cvSobel; external CV_DLL name 'cvSobel';
 procedure cvLaplace; external CV_DLL name 'cvLaplace';
-
 procedure cvCvtColor; external CV_DLL name 'cvCvtColor';
-procedure cvEqualizeHist; external CV_DLL name 'cvEqualizeHist';
 procedure cvResize; external CV_DLL name 'cvResize';
+procedure cvWarpAffine; external CV_DLL name 'cvWarpAffine';
+function cvGetAffineTransform; external CV_DLL name 'cvGetAffineTransform';
+function cv2DRotationMatrix; external CV_DLL name 'cv2DRotationMatrix';
+procedure cvWarpPerspective; external CV_DLL name 'cvWarpPerspective';
+function cvGetPerspectiveTransform; external CV_DLL name 'cvGetPerspectiveTransform';
+procedure cvRemap; external CV_DLL name 'cvRemap';
+procedure cvConvertMaps; external CV_DLL name 'cvConvertMaps';
+procedure cvLogPolar; external CV_DLL name 'cvLogPolar';
+procedure cvLinearPolar; external CV_DLL name 'cvLinearPolar';
+
+procedure cvEqualizeHist; external CV_DLL name 'cvEqualizeHist';
 function cvCreateStructuringElementEx; external CV_DLL name 'cvCreateStructuringElementEx';
 procedure cvErode; external CV_DLL name 'cvErode';
 procedure cvDilate; external CV_DLL name 'cvDilate';

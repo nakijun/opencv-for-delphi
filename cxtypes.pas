@@ -147,8 +147,7 @@ type
   end;
 
   { CvTermCriteria }
-
-  TCvTermCriteria = record
+  TCvTermCriteria = record
     _type: Integer;     { may be combination of
                           CV_TERMCRIT_ITER
                           CV_TERMCRIT_EPS }
@@ -156,9 +155,16 @@ type
     epsilon: Double;
   end;
 
+  TCvPoint2D32f = record
+    x: Single;
+    y: Single;
+  end;
+  PCvPoint2D32f = ^TCvPoint2D32f;
+
 function cvPoint(x, y: Integer): TCvPoint;
 function cvSize(width, height: Integer): TCvSize;
 function cvScalar(val0: Double; val1: Double = 0; val2: Double = 0; val3: Double = 0): TCvScalar;
+function cvScalarAll(val0123: Double): TCvScalar;
 function cvRect(AX, AY: Integer; AWidth, AHeight: Integer): TCvRect;
 function cvMat(rows: Integer; cols: Integer; _type: Integer; data: Pointer = nil): TCvMat;
 
@@ -257,6 +263,14 @@ begin
   Result._type := _type;
   Result.max_iter := max_iter;
   Result.epsilon := epsilon;
+end;
+
+function cvScalarAll(val0123: Double): TCvScalar;
+begin
+  Result.val[0] := val0123;
+  Result.val[1] := val0123;
+  Result.val[2] := val0123;
+  Result.val[3] := val0123;
 end;
 
 end.
